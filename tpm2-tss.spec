@@ -6,7 +6,7 @@ Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
 Version:	2.4.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
