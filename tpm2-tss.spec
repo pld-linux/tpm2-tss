@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	libgcrypt	# libgcrypt crypto instead of openssl
+%bcond_with	gcrypt	# libgcrypt crypto instead of openssl
 
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
@@ -18,11 +18,11 @@ BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
 BuildRequires:	json-c-devel
-%{?with_libgcrypt:BuildRequires:	libgcrypt-devel >= 1.6.0}
+%{?with_gcrypt:BuildRequires:	libgcrypt-devel >= 1.6.0}
 BuildRequires:	libtool >= 2:2
-%{!?with_libgcrypt:BuildRequires:	openssl-devel}
+%{!?with_gcrypt:BuildRequires:	openssl-devel}
 BuildRequires:	pkgconfig
-%{?with_libgcrypt:Requires:	libgcrypt >= 1.6.0}
+%{?with_gcrypt:Requires:	libgcrypt >= 1.6.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -44,8 +44,8 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	curl-devel
 Requires:	json-c-devel
-%{?with_libgcrypt:Requires:	libgcrypt-devel >= 1.6.0}
-%{!?with_libgcrypt:Requires:	openssl-devel}
+%{?with_gcrypt:Requires:	libgcrypt-devel >= 1.6.0}
+%{!?with_gcrypt:Requires:	openssl-devel}
 
 %description devel
 Header files for implementation of the Trusted Computing Group's (TCG)
