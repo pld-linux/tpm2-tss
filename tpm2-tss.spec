@@ -5,13 +5,13 @@
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
-Version:	2.4.0
-Release:	2
+Version:	2.4.2
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	269e8122e0588d56092abe3f2e38c8b9
+# Source0-md5:	db66a72182b262a25a397e10e78d981c
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -20,7 +20,7 @@ BuildRequires:	doxygen
 BuildRequires:	json-c-devel
 %{?with_gcrypt:BuildRequires:	libgcrypt-devel >= 1.6.0}
 BuildRequires:	libtool >= 2:2
-%{!?with_gcrypt:BuildRequires:	openssl-devel}
+%{!?with_gcrypt:BuildRequires:	openssl-devel >= 0.9.8}
 BuildRequires:	pkgconfig
 %{?with_gcrypt:Requires:	libgcrypt >= 1.6.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -45,7 +45,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	curl-devel
 Requires:	json-c-devel
 %{?with_gcrypt:Requires:	libgcrypt-devel >= 1.6.0}
-%{!?with_gcrypt:Requires:	openssl-devel}
+%{!?with_gcrypt:Requires:	openssl-devel >= 0.9.8}
 
 %description devel
 Header files for implementation of the Trusted Computing Group's (TCG)
@@ -120,7 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGELOG.md CONTRIBUTING.md LICENSE MAINTAINERS README.md
+%doc AUTHORS CHANGELOG.md LICENSE MAINTAINERS README.md
 %attr(755,root,root) %{_libdir}/libtss2-esys.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-esys.so.0
 %attr(755,root,root) %{_libdir}/libtss2-fapi.so.*.*.*
@@ -146,6 +146,8 @@ rm -rf $RPM_BUILD_ROOT
 /lib/udev/rules.d/60-tpm-udev.rules
 # what subsystem handles this?
 #/etc/sysusers.d/tpm2-tss.conf
+%{_mandir}/man5/fapi-config.5*
+%{_mandir}/man5/fapi-profile.5*
 
 %files devel
 %defattr(644,root,root,755)
