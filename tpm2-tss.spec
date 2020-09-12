@@ -1,28 +1,27 @@
 #
 # Conditional build:
-%bcond_with	gcrypt	# libgcrypt crypto instead of openssl
+%bcond_with	mbedtls	# mbedTLS crypto instead of OpenSSL
 
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
-Version:	2.4.2
+Version:	3.0.0
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	db66a72182b262a25a397e10e78d981c
+# Source0-md5:	a075c9f0e1e94d059c9d8b44803fa599
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
 BuildRequires:	json-c-devel
-%{?with_gcrypt:BuildRequires:	libgcrypt-devel >= 1.6.0}
 BuildRequires:	libtool >= 2:2
-%{!?with_gcrypt:BuildRequires:	openssl-devel >= 0.9.8}
+%{?with_mbedtls:BuildRequires:	mbedtls-devel}
+%{!?with_mbedtls:BuildRequires:	openssl-devel >= 0.9.8}
 BuildRequires:	pkgconfig
-%{?with_gcrypt:Requires:	libgcrypt >= 1.6.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -44,8 +43,8 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	curl-devel
 Requires:	json-c-devel
-%{?with_gcrypt:Requires:	libgcrypt-devel >= 1.6.0}
-%{!?with_gcrypt:Requires:	openssl-devel >= 0.9.8}
+%{?with_mbedtls:Requires:	mbedtls-devel >= 1.6.0}
+%{!?with_mbedtls:Requires:	openssl-devel >= 0.9.8}
 
 %description devel
 Header files for implementation of the Trusted Computing Group's (TCG)
@@ -97,6 +96,7 @@ Biblioteka statyczna tpm2-tss.
 %{__automake}
 %configure \
 	--disable-silent-rules \
+	%{?with_mbedtls:--with-crypto=mbed} \
 	--with-tmpfilesdir=%{systemdtmpfilesdir} \
 	--with-udevrulesdir=/lib/udev/rules.d \
 	--with-udevrulesprefix=60-
@@ -124,17 +124,21 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libtss2-esys.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-esys.so.0
 %attr(755,root,root) %{_libdir}/libtss2-fapi.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtss2-fapi.so.0
+%attr(755,root,root) %ghost %{_libdir}/libtss2-fapi.so.1
 %attr(755,root,root) %{_libdir}/libtss2-mu.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-mu.so.0
 %attr(755,root,root) %{_libdir}/libtss2-rc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-rc.so.0
 %attr(755,root,root) %{_libdir}/libtss2-sys.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtss2-sys.so.0
+%attr(755,root,root) %ghost %{_libdir}/libtss2-sys.so.1
+%attr(755,root,root) %{_libdir}/libtss2-tcti-cmd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-cmd.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-device.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-mssim.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-swtpm.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tctildr.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tctildr.so.0
 %dir %{_sysconfdir}/tpm2-tss
@@ -156,8 +160,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libtss2-mu.so
 %attr(755,root,root) %{_libdir}/libtss2-rc.so
 %attr(755,root,root) %{_libdir}/libtss2-sys.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-cmd.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so
 %attr(755,root,root) %{_libdir}/libtss2-tctildr.so
 %{_includedir}/tss2
 %{_pkgconfigdir}/tss2-esys.pc
@@ -165,16 +171,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/tss2-mu.pc
 %{_pkgconfigdir}/tss2-rc.pc
 %{_pkgconfigdir}/tss2-sys.pc
+%{_pkgconfigdir}/tss2-tcti-cmd.pc
 %{_pkgconfigdir}/tss2-tcti-device.pc
 %{_pkgconfigdir}/tss2-tcti-mssim.pc
+%{_pkgconfigdir}/tss2-tcti-swtpm.pc
 %{_pkgconfigdir}/tss2-tctildr.pc
 %{_mandir}/man3/ESYS_*.3*
 %{_mandir}/man3/Esys_*.3*
 %{_mandir}/man3/FapiTestgroup.3*
 %{_mandir}/man3/Fapi_*.3*
 %{_mandir}/man3/Tss2_*.3*
+%{_mandir}/man7/tss2-tcti-cmd.7*
 %{_mandir}/man7/tss2-tcti-device.7*
 %{_mandir}/man7/tss2-tcti-mssim.7*
+%{_mandir}/man7/tss2-tcti-swtpm.7*
 %{_mandir}/man7/tss2-tctildr.7*
 
 %files static
@@ -184,6 +194,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libtss2-mu.a
 %{_libdir}/libtss2-rc.a
 %{_libdir}/libtss2-sys.a
+%{_libdir}/libtss2-tcti-cmd.a
 %{_libdir}/libtss2-tcti-device.a
 %{_libdir}/libtss2-tcti-mssim.a
+%{_libdir}/libtss2-tcti-swtpm.a
 %{_libdir}/libtss2-tctildr.a
