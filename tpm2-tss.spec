@@ -12,6 +12,7 @@ Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	4d04cf52fff4ee061bb3f7b4f4ea03b7
+Patch0:		%{name}-install.patch
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -87,6 +88,7 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
