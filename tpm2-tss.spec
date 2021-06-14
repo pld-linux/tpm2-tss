@@ -5,14 +5,13 @@
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
-Version:	3.0.3
+Version:	3.1.0
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	397ba047d5743557b772c8d32e47fce2
-Patch0:		%{name}-ac.patch
+# Source0-md5:	4d04cf52fff4ee061bb3f7b4f4ea03b7
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -88,7 +87,6 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -139,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-device.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-mssim.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-pcap.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-swtpm.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tctildr.so.*.*.*
@@ -165,6 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libtss2-tcti-cmd.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so
 %attr(755,root,root) %{_libdir}/libtss2-tctildr.so
 %{_includedir}/tss2
@@ -176,6 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/tss2-tcti-cmd.pc
 %{_pkgconfigdir}/tss2-tcti-device.pc
 %{_pkgconfigdir}/tss2-tcti-mssim.pc
+%{_pkgconfigdir}/tss2-tcti-pcap.pc
 %{_pkgconfigdir}/tss2-tcti-swtpm.pc
 %{_pkgconfigdir}/tss2-tctildr.pc
 %{_mandir}/man3/ESYS_*.3*
@@ -199,5 +201,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libtss2-tcti-cmd.a
 %{_libdir}/libtss2-tcti-device.a
 %{_libdir}/libtss2-tcti-mssim.a
+%{_libdir}/libtss2-tcti-pcap.a
 %{_libdir}/libtss2-tcti-swtpm.a
 %{_libdir}/libtss2-tctildr.a
