@@ -19,6 +19,7 @@ BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
 BuildRequires:	json-c-devel
+BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 2:2
 %{?with_mbedtls:BuildRequires:	mbedtls-devel}
 %{!?with_mbedtls:BuildRequires:	openssl-devel >= 0.9.8}
