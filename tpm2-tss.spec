@@ -12,6 +12,7 @@ Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	0d60d0df3fd0daae66881a3022281323
+Patch0:		%{name}-install.patch
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -89,6 +90,7 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
+%patch0 -p1
 
 # set VERSION properly when there is no .git directory
 %{__sed} -i -e 's/m4_esyscmd_s(\[git describe --tags --always --dirty\])/%{version}/' configure.ac
