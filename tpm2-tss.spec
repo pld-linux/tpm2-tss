@@ -13,6 +13,8 @@ Group:		Libraries
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	0d60d0df3fd0daae66881a3022281323
 Patch0:		%{name}-install.patch
+Patch1:		%{name}-missing.patch
+Patch2:		%{name}-link.patch
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -21,6 +23,7 @@ BuildRequires:	doxygen
 BuildRequires:	json-c-devel
 BuildRequires:	libltdl-devel >= 2:2
 BuildRequires:	libtool >= 2:2
+BuildRequires:	libtpms-devel
 %{?with_mbedtls:BuildRequires:	mbedtls-devel}
 %{!?with_mbedtls:BuildRequires:	openssl-devel >= 1.1.0}
 BuildRequires:	pkgconfig
@@ -91,6 +94,8 @@ Biblioteka statyczna tpm2-tss.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 # set VERSION properly when there is no .git directory
 %{__sed} -i -e 's/m4_esyscmd_s(\[git describe --tags --always --dirty\])/%{version}/' configure.ac
@@ -142,6 +147,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-cmd.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-device.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-libtpms.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-libtpms.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-mssim.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so.*.*.*
@@ -171,6 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libtss2-sys.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-cmd.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-libtpms.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so
@@ -183,6 +191,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/tss2-sys.pc
 %{_pkgconfigdir}/tss2-tcti-cmd.pc
 %{_pkgconfigdir}/tss2-tcti-device.pc
+%{_pkgconfigdir}/tss2-tcti-libtpms.pc
 %{_pkgconfigdir}/tss2-tcti-mssim.pc
 %{_pkgconfigdir}/tss2-tcti-pcap.pc
 %{_pkgconfigdir}/tss2-tcti-swtpm.pc
@@ -207,6 +216,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libtss2-sys.a
 %{_libdir}/libtss2-tcti-cmd.a
 %{_libdir}/libtss2-tcti-device.a
+%{_libdir}/libtss2-tcti-libtpms.a
 %{_libdir}/libtss2-tcti-mssim.a
 %{_libdir}/libtss2-tcti-pcap.a
 %{_libdir}/libtss2-tcti-swtpm.a

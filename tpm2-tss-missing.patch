@@ -1,0 +1,10 @@
+--- tpm2-tss-3.2.0/lib/tss2-tcti-libtpms.map.orig	1970-01-01 01:00:00.000000000 +0100
++++ tpm2-tss-3.2.0/lib/tss2-tcti-libtpms.map	2022-02-21 21:14:00.504810105 +0100
+@@ -0,0 +1,7 @@
++{
++    global:
++        Tss2_Tcti_Info;
++        Tss2_Tcti_Libtpms_Init;
++    local:
++        *;
++};
