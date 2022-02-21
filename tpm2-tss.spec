@@ -5,25 +5,25 @@
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
-Version:	3.1.0
-Release:	2
+Version:	3.2.0
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	4d04cf52fff4ee061bb3f7b4f4ea03b7
-Patch0:		%{name}-install.patch
+# Source0-md5:	0d60d0df3fd0daae66881a3022281323
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
 BuildRequires:	json-c-devel
-BuildRequires:	libltdl-devel
+BuildRequires:	libltdl-devel >= 2:2
 BuildRequires:	libtool >= 2:2
 %{?with_mbedtls:BuildRequires:	mbedtls-devel}
-%{!?with_mbedtls:BuildRequires:	openssl-devel >= 0.9.8}
+%{!?with_mbedtls:BuildRequires:	openssl-devel >= 1.1.0}
 BuildRequires:	pkgconfig
+BuildRequires:	sed >= 4.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -46,7 +46,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	curl-devel
 Requires:	json-c-devel
 %{?with_mbedtls:Requires:	mbedtls-devel >= 1.6.0}
-%{!?with_mbedtls:Requires:	openssl-devel >= 0.9.8}
+%{!?with_mbedtls:Requires:	openssl-devel >= 1.1.0}
 
 %description devel
 Header files for implementation of the Trusted Computing Group's (TCG)
@@ -89,7 +89,9 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
-%patch0 -p1
+
+# set VERSION properly when there is no .git directory
+%{__sed} -i -e 's/m4_esyscmd_s(\[git describe --tags --always --dirty\])/%{version}/' configure.ac
 
 %build
 %{__libtoolize}
