@@ -1,3 +1,13 @@
+# TODO:
+# /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:2: Failed to resolve user 'tss': No such process
+# Filed to parse ACL "default:group:tss:rwx": Invalid argument.
+# Ignoring /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:4: Failed to resolve user 'tss': No such process
+# Failed to parse ACL "default:group:tss:rwx": Invalid argument. Ignoring
+# /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:2: Failed to resolve user 'tss': No such process
+# Failed to parse ACL "default:group:tss:rwx": Invalid argument. Ignoring
+# /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:4: Failed to resolve user 'tss': No such process
+# Failed to parse ACL "default:group:tss:rwx": Invalid argument. Ignoring
+
 #
 # Conditional build:
 %bcond_with	mbedtls	# mbedTLS crypto instead of OpenSSL
