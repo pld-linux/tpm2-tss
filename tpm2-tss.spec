@@ -1,13 +1,3 @@
-# TODO:
-# /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:2: Failed to resolve user 'tss': No such process
-# Filed to parse ACL "default:group:tss:rwx": Invalid argument.
-# Ignoring /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:4: Failed to resolve user 'tss': No such process
-# Failed to parse ACL "default:group:tss:rwx": Invalid argument. Ignoring
-# /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:2: Failed to resolve user 'tss': No such process
-# Failed to parse ACL "default:group:tss:rwx": Invalid argument. Ignoring
-# /usr/lib/tmpfiles.d/tpm2-tss-fapi.conf:4: Failed to resolve user 'tss': No such process
-# Failed to parse ACL "default:group:tss:rwx": Invalid argument. Ignoring
-
 #
 # Conditional build:
 %bcond_with	mbedtls	# mbedTLS crypto instead of OpenSSL
@@ -16,7 +6,7 @@ Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
 Version:	3.2.0
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
@@ -38,6 +28,14 @@ BuildRequires:	libtpms-devel
 %{!?with_mbedtls:BuildRequires:	openssl-devel >= 1.1.0}
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Provides:	group(tss)
+Provides:	user(tss)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -134,11 +132,24 @@ rm -rf $RPM_BUILD_ROOT
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libtss2*.la
 
+# tss user home (shared with trousers)
+install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/tpm
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+%groupadd -g 139 tss
+%useradd -u 139 -d %{_localstatedir}/lib/tpm -s /bin/false -c "TrouSerS user" -g tss tss
+
 %post   -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+if [ "$1" = "0" ]; then
+	%userremove tss
+	%groupremove tss
+fi
 
 %files
 %defattr(644,root,root,755)
@@ -172,6 +183,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/tpm2-tss/fapi-profiles
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP256SHA256.json
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA2048SHA256.json
+# tss user home (shared with trousers)
+%attr(700,tss,tss) %{_localstatedir}/lib/tpm
 %{systemdtmpfilesdir}/tpm2-tss-fapi.conf
 /lib/udev/rules.d/60-tpm-udev.rules
 # what subsystem handles this?
