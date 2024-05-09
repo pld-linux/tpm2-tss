@@ -1,6 +1,7 @@
 #
 # Conditional build:
-%bcond_with	mbedtls	# mbedTLS crypto instead of OpenSSL
+%bcond_with	mbedtls		# mbedTLS crypto instead of OpenSSL
+%bcond_without	static_libs	# static libraries
 
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
@@ -28,6 +29,7 @@ BuildRequires:	libuuid-devel
 %{?with_mbedtls:BuildRequires:	mbedtls-devel}
 %{!?with_mbedtls:BuildRequires:	openssl-devel >= 1.1.0}
 BuildRequires:	pkgconfig
+BuildRequires:	rpmbuild(macros) >= 1.527
 BuildRequires:	sed >= 4.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -119,6 +121,7 @@ Biblioteka statyczna tpm2-tss.
 	systemd_sysusers=yes \
 	systemd_tmpfiles=yes \
 	--disable-silent-rules \
+	%{__enable_disable static_libs static} \
 	%{?with_mbedtls:--with-crypto=mbed} \
 	--with-tmpfilesdir=%{systemdtmpfilesdir} \
 	--with-udevrulesdir=/lib/udev/rules.d \
@@ -269,6 +272,7 @@ fi
 %{_mandir}/man7/tss2-tcti-swtpm.7*
 %{_mandir}/man7/tss2-tctildr.7*
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libtss2-esys.a
@@ -290,3 +294,4 @@ fi
 %{_libdir}/libtss2-tcti-spidev.a
 %{_libdir}/libtss2-tcti-swtpm.a
 %{_libdir}/libtss2-tctildr.a
+%endif
