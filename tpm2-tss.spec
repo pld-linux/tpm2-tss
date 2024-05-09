@@ -5,23 +5,26 @@
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
-Version:	3.2.2
+Version:	4.1.1
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	eb6bab06a816f640f497341e89939343
-Patch0:		%{name}-install.patch
+# Source0-md5:	d50302e29150823254b9f1594add6dcd
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
-BuildRequires:	json-c-devel
+BuildRequires:	json-c-devel >= 0.13
+# or libftdi1-devel, but version 0 is preferred (as of tpm2-tss 4.1.1)
+BuildRequires:	libftdi-devel
 BuildRequires:	libltdl-devel >= 2:2
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libtpms-devel
+BuildRequires:	libusb-devel >= 1.0
+BuildRequires:	libuuid-devel
 %{?with_mbedtls:BuildRequires:	mbedtls-devel}
 %{!?with_mbedtls:BuildRequires:	openssl-devel >= 1.1.0}
 BuildRequires:	pkgconfig
@@ -54,7 +57,10 @@ Summary(uk.UTF-8):	Хедери для tpm2-tss
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	curl-devel
-Requires:	json-c-devel
+Requires:	json-c-devel >= 0.13
+Requires:	libftdi-devel
+Requires:	libusb-devel >= 1.0
+Requires:	libuuid-devel
 %{?with_mbedtls:Requires:	mbedtls-devel >= 1.6.0}
 %{!?with_mbedtls:Requires:	openssl-devel >= 1.1.0}
 
@@ -99,7 +105,6 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
-%patch0 -p1
 
 # set VERSION properly when there is no .git directory
 %{__sed} -i -e 's/m4_esyscmd_s(\[git describe --tags --always --dirty\])/%{version}/' configure.ac
@@ -111,6 +116,8 @@ Biblioteka statyczna tpm2-tss.
 %{__autoheader}
 %{__automake}
 %configure \
+	systemd_sysusers=yes \
+	systemd_tmpfiles=yes \
 	--disable-silent-rules \
 	%{?with_mbedtls:--with-crypto=mbed} \
 	--with-tmpfilesdir=%{systemdtmpfilesdir} \
@@ -149,13 +156,15 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGELOG.md LICENSE MAINTAINERS README.md
+%doc AUTHORS CHANGELOG.md LICENSE MAINTAINERS.md README.md
 %attr(755,root,root) %{_libdir}/libtss2-esys.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-esys.so.0
 %attr(755,root,root) %{_libdir}/libtss2-fapi.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-fapi.so.1
 %attr(755,root,root) %{_libdir}/libtss2-mu.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-mu.so.0
+%attr(755,root,root) %{_libdir}/libtss2-policy.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-policy.so.0
 %attr(755,root,root) %{_libdir}/libtss2-rc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-rc.so.0
 %attr(755,root,root) %{_libdir}/libtss2-sys.so.*.*.*
@@ -164,12 +173,24 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-cmd.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-device.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-i2c-ftdi.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-i2c-ftdi.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-i2c-helper.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-i2c-helper.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-libtpms.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-libtpms.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-mssim.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-pcap.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spi-ftdi.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-spi-ftdi.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spi-helper.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-spi-helper.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spi-ltt2go.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-spi-ltt2go.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spidev.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-spidev.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-swtpm.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tctildr.so.*.*.*
@@ -178,7 +199,9 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/tpm2-tss/fapi-config.json
 %dir %{_sysconfdir}/tpm2-tss/fapi-profiles
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP256SHA256.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP384SHA384.json
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA2048SHA256.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA3072SHA384.json
 # tss user home (shared with trousers)
 %attr(700,tss,tss) %{_localstatedir}/lib/tpm
 %{systemdtmpfilesdir}/tpm2-tss-fapi.conf
@@ -193,26 +216,40 @@ fi
 %attr(755,root,root) %{_libdir}/libtss2-esys.so
 %attr(755,root,root) %{_libdir}/libtss2-fapi.so
 %attr(755,root,root) %{_libdir}/libtss2-mu.so
+%attr(755,root,root) %{_libdir}/libtss2-policy.so
 %attr(755,root,root) %{_libdir}/libtss2-rc.so
 %attr(755,root,root) %{_libdir}/libtss2-sys.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-cmd.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-device.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-i2c-ftdi.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-i2c-helper.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-libtpms.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spi-ftdi.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spi-helper.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spi-ltt2go.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-spidev.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-swtpm.so
 %attr(755,root,root) %{_libdir}/libtss2-tctildr.so
 %{_includedir}/tss2
 %{_pkgconfigdir}/tss2-esys.pc
 %{_pkgconfigdir}/tss2-fapi.pc
 %{_pkgconfigdir}/tss2-mu.pc
+%{_pkgconfigdir}/tss2-policy.pc
 %{_pkgconfigdir}/tss2-rc.pc
 %{_pkgconfigdir}/tss2-sys.pc
 %{_pkgconfigdir}/tss2-tcti-cmd.pc
 %{_pkgconfigdir}/tss2-tcti-device.pc
+%{_pkgconfigdir}/tss2-tcti-i2c-ftdi.pc
+%{_pkgconfigdir}/tss2-tcti-i2c-helper.pc
 %{_pkgconfigdir}/tss2-tcti-libtpms.pc
 %{_pkgconfigdir}/tss2-tcti-mssim.pc
 %{_pkgconfigdir}/tss2-tcti-pcap.pc
+%{_pkgconfigdir}/tss2-tcti-spi-ftdi.pc
+%{_pkgconfigdir}/tss2-tcti-spi-helper.pc
+%{_pkgconfigdir}/tss2-tcti-spi-ltt2go.pc
+%{_pkgconfigdir}/tss2-tcti-spidev.pc
 %{_pkgconfigdir}/tss2-tcti-swtpm.pc
 %{_pkgconfigdir}/tss2-tctildr.pc
 %{_mandir}/man3/ESYS_*.3*
@@ -222,7 +259,13 @@ fi
 %{_mandir}/man3/Tss2_*.3*
 %{_mandir}/man7/tss2-tcti-cmd.7*
 %{_mandir}/man7/tss2-tcti-device.7*
+%{_mandir}/man7/tss2-tcti-i2c-ftdi.7*
+%{_mandir}/man7/tss2-tcti-i2c-helper.7*
 %{_mandir}/man7/tss2-tcti-mssim.7*
+%{_mandir}/man7/tss2-tcti-spi-ftdi.7*
+%{_mandir}/man7/tss2-tcti-spi-helper.7*
+%{_mandir}/man7/tss2-tcti-spi-ltt2go.7*
+%{_mandir}/man7/tss2-tcti-spidev.7*
 %{_mandir}/man7/tss2-tcti-swtpm.7*
 %{_mandir}/man7/tss2-tctildr.7*
 
@@ -231,12 +274,19 @@ fi
 %{_libdir}/libtss2-esys.a
 %{_libdir}/libtss2-fapi.a
 %{_libdir}/libtss2-mu.a
+%{_libdir}/libtss2-policy.a
 %{_libdir}/libtss2-rc.a
 %{_libdir}/libtss2-sys.a
 %{_libdir}/libtss2-tcti-cmd.a
 %{_libdir}/libtss2-tcti-device.a
+%{_libdir}/libtss2-tcti-i2c-ftdi.a
+%{_libdir}/libtss2-tcti-i2c-helper.a
 %{_libdir}/libtss2-tcti-libtpms.a
 %{_libdir}/libtss2-tcti-mssim.a
 %{_libdir}/libtss2-tcti-pcap.a
+%{_libdir}/libtss2-tcti-spi-ftdi.a
+%{_libdir}/libtss2-tcti-spi-helper.a
+%{_libdir}/libtss2-tcti-spi-ltt2go.a
+%{_libdir}/libtss2-tcti-spidev.a
 %{_libdir}/libtss2-tcti-swtpm.a
 %{_libdir}/libtss2-tctildr.a
