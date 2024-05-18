@@ -66,7 +66,11 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	curl-devel
 Requires:	json-c-devel >= 0.13
+%if %{with libftdi1}
+Requires:	libftdi1-devel
+%else
 Requires:	libftdi-devel
+%endif
 Requires:	libusb-devel >= 1.0
 Requires:	libuuid-devel
 %{?with_mbedtls:Requires:	mbedtls-devel >= 1.6.0}
