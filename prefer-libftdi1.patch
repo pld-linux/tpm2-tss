@@ -1,0 +1,20 @@
+diff -ur tpm2-tss-4.1.2.orig/configure.ac tpm2-tss-4.1.2/configure.ac
+--- tpm2-tss-4.1.2.orig/configure.ac	2024-05-10 10:49:59.000000000 +0200
++++ tpm2-tss-4.1.2/configure.ac	2024-05-18 14:29:23.322225666 +0200
+@@ -342,12 +342,12 @@
+     AC_DEFINE([TCTI_SPIDEV],[1], [TCTI FOR SPIDEV BASED ACCESS TO TPM]))
+ 
+ PKG_CHECK_MODULES([LIBFTDI],
+-                  [libftdi],
+-                  [AC_DEFINE(LIBFTDI_VERSION, [0], [libftdi version 0.x])]
++                  [libftdi1],
++                  [AC_DEFINE(LIBFTDI_VERSION, [1], [libftdi version 1.x])]
+                   [have_libftdi=yes],
+                   [PKG_CHECK_MODULES([LIBFTDI],
+-                                     [libftdi1],
+-                                     [AC_DEFINE(LIBFTDI_VERSION, [1], [libftdi version 1.x])]
++                                     [libftdi],
++                                     [AC_DEFINE(LIBFTDI_VERSION, [0], [libftdi version 0.x])]
+                                      [have_libftdi=yes],
+                                      [have_libftdi=no])])
+ 

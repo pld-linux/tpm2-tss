@@ -1,18 +1,20 @@
 #
 # Conditional build:
+%bcond_with	libftdi1	# build with libftdi1 instead of old libftdi
 %bcond_with	mbedtls		# mbedTLS crypto instead of OpenSSL
 %bcond_without	static_libs	# static libraries
 
 Summary:	OSS implementation of the TCG TPM2 Software Stack (TSS2)
 Summary(pl.UTF-8):	Mająca otwarte źródła implementacja TCG TPM2 Software Stack (TSS2)
 Name:		tpm2-tss
-Version:	4.1.1
+Version:	4.1.2
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tpm2-software/tpm2-tss/releases
 Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	d50302e29150823254b9f1594add6dcd
+# Source0-md5:	aae8af8e88dcd1dfe152e1a3f590ef6f
+Patch0:		prefer-libftdi1.patch
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -20,7 +22,11 @@ BuildRequires:	curl-devel
 BuildRequires:	doxygen
 BuildRequires:	json-c-devel >= 0.13
 # or libftdi1-devel, but version 0 is preferred (as of tpm2-tss 4.1.1)
+%if %{with libftdi1}
+BuildRequires:	libftdi1-devel
+%else
 BuildRequires:	libftdi-devel
+%endif
 BuildRequires:	libltdl-devel >= 2:2
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libtpms-devel
@@ -107,6 +113,7 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
+%{?with_libftdi1:%patch0 -p1}
 
 # set VERSION properly when there is no .git directory
 %{__sed} -i -e 's/m4_esyscmd_s(\[git describe --tags --always --dirty\])/%{version}/' configure.ac
