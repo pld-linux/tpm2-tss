@@ -17,6 +17,7 @@ Source0:	https://github.com/tpm2-software/tpm2-tss/releases/download/%{version}/
 Patch0:		prefer-libftdi1.patch
 URL:		https://github.com/tpm2-software/tpm2-tss
 BuildRequires:	autoconf >= 2.50
+BuildRequires:	autoconf-archive
 BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
