@@ -196,6 +196,8 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-libtpms.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-mssim.so.0
+%attr(755,root,root) %{_libdir}/libtss2-tcti-null.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-null.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libtss2-tcti-pcap.so.0
 %attr(755,root,root) %{_libdir}/libtss2-tcti-spi-ftdi.so.*.*.*
@@ -213,13 +215,20 @@ fi
 %dir %{_sysconfdir}/tpm2-tss
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/tpm2-tss/fapi-config.json
 %dir %{_sysconfdir}/tpm2-tss/fapi-profiles
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP256SHA256-high-range.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP256SHA256-legacy.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP256SHA256-low-range.json
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP256SHA256.json
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_ECCP384SHA384.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA2048SHA256-high-range.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA2048SHA256-legacy.json
+%{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA2048SHA256-low-range.json
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA2048SHA256.json
 %{_sysconfdir}/tpm2-tss/fapi-profiles/P_RSA3072SHA384.json
 # tss user home (shared with trousers)
 %attr(700,tss,tss) %{_localstatedir}/lib/tpm
 %{systemdtmpfilesdir}/tpm2-tss-fapi.conf
+/lib/udev/rules.d/60-ltt2go-udev.rules
 /lib/udev/rules.d/60-tpm-udev.rules
 # what subsystem handles this?
 #/etc/sysusers.d/tpm2-tss.conf
@@ -240,6 +249,7 @@ fi
 %attr(755,root,root) %{_libdir}/libtss2-tcti-i2c-helper.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-libtpms.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-mssim.so
+%attr(755,root,root) %{_libdir}/libtss2-tcti-null.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-pcap.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-spi-ftdi.so
 %attr(755,root,root) %{_libdir}/libtss2-tcti-spi-helper.so
@@ -260,6 +270,7 @@ fi
 %{_pkgconfigdir}/tss2-tcti-i2c-helper.pc
 %{_pkgconfigdir}/tss2-tcti-libtpms.pc
 %{_pkgconfigdir}/tss2-tcti-mssim.pc
+%{_pkgconfigdir}/tss2-tcti-null.pc
 %{_pkgconfigdir}/tss2-tcti-pcap.pc
 %{_pkgconfigdir}/tss2-tcti-spi-ftdi.pc
 %{_pkgconfigdir}/tss2-tcti-spi-helper.pc
@@ -299,6 +310,7 @@ fi
 %{_libdir}/libtss2-tcti-i2c-helper.a
 %{_libdir}/libtss2-tcti-libtpms.a
 %{_libdir}/libtss2-tcti-mssim.a
+%{_libdir}/libtss2-tcti-null.a
 %{_libdir}/libtss2-tcti-pcap.a
 %{_libdir}/libtss2-tcti-spi-ftdi.a
 %{_libdir}/libtss2-tcti-spi-helper.a
