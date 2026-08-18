@@ -118,7 +118,7 @@ Biblioteka statyczna tpm2-tss.
 
 %prep
 %setup -q
-%{?with_libftdi1:%patch0 -p1}
+%{?with_libftdi1:%patch -P0 -p1}
 
 # set VERSION properly when there is no .git directory
 %{__sed} -i -e 's/m4_esyscmd_s(\[git describe --tags --always --dirty\])/%{version}/' configure.ac
